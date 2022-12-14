@@ -53,6 +53,26 @@ class GitHubClient:
             print(e)
             return None
 
+    def create_tag(self, repo: str, sha: str, tag: str):
+        """
+        Create a new tag on an initial commit of the specified branch.
+        """
+        url = f'{self.base_url}repos/{repo}/git/tags'
+        data = {
+            'tag': tag,
+            'message': f'Tagging initial commit of branch {tag}',
+            'object': sha,
+            'type': 'commit'
+        }
+
+        try:
+            response = requests.post(url, json=data, headers=self.headers)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(e)
+            return None
+
 #Create instnace of the GitHubClient class
 client = GitHubClient(api_token)
 
@@ -68,3 +88,8 @@ else:
 #Create new branch
 branch_name = "test-branch"
 response = client.create_branch(repo_name, branch_name)
+
+#Put the tag on the initial commit of the new branch
+commit_sha = response['commit']['sha']
+tag_name = "my-new-tag"
+response = client.put_tag(repo_name, commit_sha, tag_name)
