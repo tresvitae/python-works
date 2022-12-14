@@ -1,6 +1,12 @@
 import jmespath
+import json
 
 #Load JSON data from file
+with open('APIresponse.json') as json_file:
+  # Parse the JSON data
+  json_data = json.load(json_file)
+
+'''
 json_file = """
 {
   "reservations": [
@@ -19,23 +25,11 @@ json_file = """
   ]
 }
 """
+'''
+query = "reservations[].instances[?state=='running' && reservationInYears<'3'].name"
 
-
-query = "reservations[].instances[?state=='running' && reservationInYears<3].name"
-
-#Parse the input JSON file and evaluate the JMESPath query
-json_data = json.loads(json_file)
+#Evaluate the JMESPath query
+#json_data = json.loads(json_file)
 results = jmespath.search(query, json_data)
 
-# Print the resulting list of instance names
 print(results)
-
-
-
-import json
-
-# Open the input file
-with open('input.json') as json_file:
-  # Parse the JSON data
-  json_data = json.load(json_file)
-  # Use the JSON data...
