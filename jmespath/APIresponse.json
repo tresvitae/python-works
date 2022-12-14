@@ -1,0 +1,16 @@
+{
+    "reservations": [
+        {
+            "instances": [
+                {"name": "instance1", "state": "running", "reservationInYears": "2"},
+                {"name": "instance2", "state": "stopped", "reservationInYears": "1"}
+            ]
+        },
+        {
+            "instances": [
+                {"name": "instance3", "state": "terminated", "reservationInYears": "3"},
+                {"name": "instance4", "state": "running", "reservationInYears": "4"}
+            ]
+        }
+    ]
+}
