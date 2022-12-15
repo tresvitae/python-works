@@ -100,19 +100,19 @@ else:
     print('Failed to create repository.')
 '''
 #Get latest sha and create new branch
-branch_name = "main"
+original_branch_name = "main"
+new_branch_name = "develop-fix2"
 owner_name = "tresvitae"
-sha_id = client.get_branch_sha(owner_name, repo_name, branch_name)
-print(type(sha_id))
-'''
-response = client.create_branch(owner_name, repo_name, branch_name, sha_id)
+
+sha_id = client.get_branch_sha(owner_name, repo_name, original_branch_name)
+response = client.create_branch(owner_name, repo_name, new_branch_name, sha_id)
 
 if response:
-    print(f'New branch {branch_name} created successfully!')
+    print(f'New branch {new_branch_name} created successfully from {sha_id}.')
 else:
     print('Failed to create the branch.')
 
-'''
+
 #Put the tag on the initial commit of the new branch
 #commit_sha = response['commit']['sha']
 #tag_name = "my-new-tag"
