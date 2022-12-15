@@ -34,6 +34,20 @@ class GitHubClient:
             print(e)
             return None
 
+    def get_branch_sha(self, owner: str, repo: str, branch: str):
+        """
+        Get the SHA of the latest commit on the specified branch.
+        """
+        url = f'{self.base_url}repos/{owner}/{repo}/branches/{branch}'
+
+        try:
+            response = requests.get(url, headers=self.headers)
+            response.raise_for_status()
+            return response.json()['commit']['sha']
+        except requests.exceptions.RequestException as e:
+            print(e)
+            return None
+
     def create_branch(self, owner: str, repo: str, branch: str, sha: str='main'):
         """
         Create a new branch on a repository.
@@ -85,16 +99,20 @@ if response:
 else:
     print('Failed to create repository.')
 '''
-#Create new branch
-branch_name = "deveoper-ui2"
+#Get latest sha and create new branch
+branch_name = "main"
 owner_name = "tresvitae"
-sha_id = ""
-response = client.create_branch(owner_name, repo_name, branch_name)
+sha_id = client.get_branch_sha(owner_name, repo_name, branch_name)
+print(type(sha_id))
+'''
+response = client.create_branch(owner_name, repo_name, branch_name, sha_id)
 
 if response:
     print(f'New branch {branch_name} created successfully!')
 else:
     print('Failed to create the branch.')
+
+'''
 #Put the tag on the initial commit of the new branch
 #commit_sha = response['commit']['sha']
 #tag_name = "my-new-tag"
