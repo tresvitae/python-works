@@ -65,12 +65,12 @@ class GitHubClient:
         except requests.exceptions.RequestException as e:
             print(e)
             return None
-'''
-    def create_tag(self, repo: str, sha: str, tag: str):
+
+    def create_tag(self, owner: str, repo: str, sha: str, tag: str):
         """
         Create a new tag on an initial commit of the specified branch.
         """
-        url = f'{self.base_url}repos/{repo}/git/tags'
+        url = f'{self.base_url}repos/{owner}/{repo}/git/tags'
         data = {
             'tag': tag,
             'message': f'Tagging initial commit of branch {tag}',
@@ -85,28 +85,28 @@ class GitHubClient:
         except requests.exceptions.RequestException as e:
             print(e)
             return None
-'''
+
 #Create instnace of the GitHubClient class
 client = GitHubClient(api_token)
 
 #Create the repository 
-repo_name = "my-peex-test-repo"
-'''
+repo_name = "my-peex-test-repo7"
+
 response = client.create_repository(repo_name)
 
 if response:
     print('Repository created successfully!')
 else:
     print('Failed to create repository.')
-'''
+
 #Get latest sha and create new branch
 original_branch_name = "main"
-new_branch_name = "develop-fix2"
+new_branch_name = "developer"
 owner_name = "tresvitae"
 
 sha_id = client.get_branch_sha(owner_name, repo_name, original_branch_name)
 response = client.create_branch(owner_name, repo_name, new_branch_name, sha_id)
-
+print(sha_id)
 if response:
     print(f'New branch {new_branch_name} created successfully from {sha_id}.')
 else:
@@ -114,6 +114,23 @@ else:
 
 
 #Put the tag on the initial commit of the new branch
-#commit_sha = response['commit']['sha']
-#tag_name = "my-new-tag"
-#response = client.put_tag(repo_name, commit_sha, tag_name)
+tag_name = "v1.0.0"
+response = client.create_tag(owner_name, repo_name, sha_id, tag_name)
+
+print(sha_id)
+if response:
+    print(f'Tag {tag_name} added successfully!')
+else:
+    print(f'Failed to add tag to initial commit in {new_branch_name} branch.')
+
+
+
+'''
+echo f'# {repo_name}' >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/tresvitae/my-peex-test-repo7.git
+git push -u origin main
+'''
