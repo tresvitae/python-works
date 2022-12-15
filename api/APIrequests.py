@@ -1,5 +1,4 @@
 import requests
-import base64
 from os import environ
 
 api_token = environ['GITHUB_API_TOKEN']
@@ -35,13 +34,13 @@ class GitHubClient:
             print(e)
             return None
 
-    def create_branch(self, owner: str, repo: str, branch_name: str, sha: str=None):
+    def create_branch(self, owner: str, repo: str, branch: str, sha: str='main'):
         """
         Create a new branch on a repository.
         """
         url = f'{self.base_url}repos/{owner}/{repo}/git/refs'
         data = {
-            'ref': f'refs/heads/{branch_name}',
+            'ref': f'refs/heads/{branch}',
             'sha': sha
         }
 
@@ -52,7 +51,7 @@ class GitHubClient:
         except requests.exceptions.RequestException as e:
             print(e)
             return None
-
+'''
     def create_tag(self, repo: str, sha: str, tag: str):
         """
         Create a new tag on an initial commit of the specified branch.
@@ -72,24 +71,31 @@ class GitHubClient:
         except requests.exceptions.RequestException as e:
             print(e)
             return None
-
+'''
 #Create instnace of the GitHubClient class
 client = GitHubClient(api_token)
 
 #Create the repository 
 repo_name = "my-peex-test-repo"
+'''
 response = client.create_repository(repo_name)
 
 if response:
     print('Repository created successfully!')
 else:
-    print('Failed to create repository')
-
+    print('Failed to create repository.')
+'''
 #Create new branch
-branch_name = "test-branch"
-response = client.create_branch(repo_name, branch_name)
+branch_name = "deveoper-ui2"
+owner_name = "tresvitae"
+sha_id = ""
+response = client.create_branch(owner_name, repo_name, branch_name)
 
+if response:
+    print(f'New branch {branch_name} created successfully!')
+else:
+    print('Failed to create the branch.')
 #Put the tag on the initial commit of the new branch
-commit_sha = response['commit']['sha']
-tag_name = "my-new-tag"
-response = client.put_tag(repo_name, commit_sha, tag_name)
+#commit_sha = response['commit']['sha']
+#tag_name = "my-new-tag"
+#response = client.put_tag(repo_name, commit_sha, tag_name)
