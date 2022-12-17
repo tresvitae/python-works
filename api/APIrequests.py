@@ -22,9 +22,6 @@ class GitHubClient:
         data = {
             'name': name,
             'private': False
-            #"has_issues": True,
-            #"has_projects": True,
-            #"has_wiki": True
         }
 
         try:
@@ -35,15 +32,14 @@ class GitHubClient:
             print(e)
             return None
 
-    def create_initial_commit(self, owner: str, repo: str, branch: str, message: str, content: str):
+    def create_initial_commit(self, owner: str, repo: str, message: str, content: str):
         """
         Create initial commit on the new repository.
         """
         url = f'{self.base_url}repos/{owner}/{repo}/contents/README.md'
         data = {
             'message': message,
-            'content': content#,
-            #'branch': branch
+            'content': content
         }
 
         try:
@@ -68,7 +64,7 @@ class GitHubClient:
             print(e)
             return None
 
-    def create_branch(self, owner: str, repo: str, branch: str, sha: str='main'):
+    def create_branch(self, owner: str, repo: str, branch: str, sha: str):
         """
         Create a new branch on a repository.
         """
@@ -110,35 +106,36 @@ class GitHubClient:
 client = GitHubClient(api_token)
 
 #Create the repository 
-repo_name = "my-peex-test-repo5"
+repo_name = "peex-test-repo"
 
 response = client.create_repository(repo_name)
 
 if response:
-    print('Repository created successfully!')
+    print(f'Repository {repo_name} created successfully!')
 else:
     print('Failed to create repository.')
 
 # Create the initial commit in the new repository
 owner_name = "tresvitae"
-original_branch_name = "master"
-message = 'Initial commit'
+message = "Initial commit"
 
 #Encode to Base64 fromat
 encode_test = base64.b64encode(b'PEEX I WANNA GET PROMOTION')
 content = encode_test.decode()
 
-response = client.create_initial_commit(owner_name, repo_name, original_branch_name, message, content)
+response = client.create_initial_commit(owner_name, repo_name, message, content)
 
 if response:
-    print(f'New commit with message {base64.b64decode(content)} created successfully!.')
+    print(f'New commit with message "{base64.b64decode(content).decode()}" created successfully!.')
 else:
     print('Failed to create initial commit.')
 
-#Get latest sha and create new branch
-new_branch_name = "developer"
+#Get latest sha on master branch and create new branch
+original_branch_name = "master"
+new_branch_name = "development"
 
 sha_id = client.get_branch_sha(owner_name, repo_name, original_branch_name)
+
 response = client.create_branch(owner_name, repo_name, new_branch_name, sha_id)
 
 if response:
