@@ -1,6 +1,8 @@
 import requests
-from os import environ
+from os import environ, getcwd
+from shutil import rmtree
 import base64
+from subprocess import run
 
 api_token = environ['GITHUB_API_TOKEN']
 
@@ -94,6 +96,15 @@ class GitHubClient:
             'type': 'commit'
         }
 
+        #Clone the remote repository
+        run(f'git clone https://github.com/{owner}/{repo}.git', shell=True)
+        #Push the tag to the remote repository
+        run(f'cd {repo}', shell=True)
+        run(f'git push origin --tags', shell=True)
+        #Remove the cloned repository
+        pwd = getcwd()
+        rmtree(f'{pwd}/{repo}')
+        
         try:
             response = requests.post(url, json=data, headers=self.headers)
             response.raise_for_status()
@@ -106,7 +117,7 @@ class GitHubClient:
 client = GitHubClient(api_token)
 
 #Create the repository 
-repo_name = "peex-test-repo"
+repo_name = "peex-test-repo4"
 
 response = client.create_repository(repo_name)
 
@@ -151,5 +162,5 @@ response = client.create_tag(owner_name, repo_name, sha_id, tag_name)
 if response:
     print(f'Tag {tag_name} added successfully!')
 else:
-    print(f'Failed to add tag to initial commit in {new_branch_name} branch.')
+    print('Failed to add tag to initial commit.')
 
