@@ -99,8 +99,7 @@ class GitHubClient:
         #Clone the remote repository
         run(f'git clone https://github.com/{owner}/{repo}.git', shell=True)
         #Push the tag to the remote repository
-        run(f'cd {repo}', shell=True)
-        run(f'git push origin --tags', shell=True)
+        run(f'cd {repo} && git tag {tag} && git push origin {tag}', shell=True)
         #Remove the cloned repository
         pwd = getcwd()
         rmtree(f'{pwd}/{repo}')
@@ -117,7 +116,7 @@ class GitHubClient:
 client = GitHubClient(api_token)
 
 #Create the repository 
-repo_name = "peex-test-repo4"
+repo_name = "peex-test-repo"
 
 response = client.create_repository(repo_name)
 
